@@ -4,5 +4,20 @@
   },
   "scripts": {
     "start": "python app.py"
+  },
+  "tracker_1": {
+    "model_name": "alwaysai/mobilenet_ssd",
+    "video_mode": "camera",
+    "video_camera_id": 0,
+    "video_filepath": "",
+    "enable_streamer": true,
+    "enable_logs": true,
+    "object_detection_period": 30,
+    "object_detect_confidence": 50,
+    "centroid_deregister_frames": 20,
+    "centroid_max_distance": 50,
+    "filter_labels": [
+      "person"
+    ]
   }
 }
