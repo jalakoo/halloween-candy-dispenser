@@ -170,8 +170,8 @@ def start_tracking_loop(config, components):
     if tracker is None:
         raise Exception(
             "alwaysai_helper.py: start_tracking_loop: tracker missing from components")
-    print("alwaysai_helper.py: start_tracking_loop: about to read frame from {}".format(
-        video_stream))
+    # print("alwaysai_helper.py: start_tracking_loop: about to read frame from {}".format(
+        # video_stream))
     frame = video_stream.read()
     # print("alwaysai_helper.py: start_tracking_loop: about get filtered predictions...")
     predictions = _filtered_predictions_from(
@@ -187,15 +187,13 @@ def end_tracking_loop(components, predictions, text):
     if fps is None:
         raise Exception(
             "alwaysai_helper.py: end_tracking_loop: fps missing from components")
-    if streamer is None:
-        raise Exception(
-            "alwaysai_helper.py: end_tracking_loop: streamer missing from components")
     if video_stream is None:
         raise Exception(
             "alwaysai_helper.py: end_tracking_loop: video_stream missing from components")
     frame = video_stream.read()
     edgeiq.markup_image(frame, predictions)
-    streamer.send_data(frame, text)
+    if streamer is not None:
+        streamer.send_data(frame, text)
     fps.update()
 
 

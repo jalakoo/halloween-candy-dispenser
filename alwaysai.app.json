@@ -10,7 +10,7 @@
     "video_mode": "camera",
     "video_camera_id": 0,
     "video_filepath": "",
-    "enable_streamer": true,
+    "enable_streamer": false,
     "enable_logs": true,
     "object_detection_period": 30,
     "object_detect_confidence": 50,

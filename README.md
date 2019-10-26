@@ -24,3 +24,17 @@ This allows for rapid development and deployment of the app onto an edge
 device (like a raspberry pi) without requiring it to have internet access.
 
 To sign up, goto [this page](https://learn.alwaysai.co/beta)
+
+### VOLUME CONTROL
+```
+amixer scontrols
+amixer sset 'Master' 100%
+```
+
+### DEPENDENCIES
+alwaysAI
+`npm install -g alwaysai`
+Simple Audio
+`pip3 install simpleaudio`
+`sudo apt-get install libasound2-dev`
+
