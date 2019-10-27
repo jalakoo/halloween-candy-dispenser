@@ -25,6 +25,16 @@ class Speech:
         ply.play()
         self._last_audio = ply
 
+    def compleate_then_play(filename):
+        self._last_audio.wait_done()
+        if filename in self._players.keys():
+            ply = self._players[filename]
+        else:
+            ply = self.load(filename)
+        ply.play()
+        self._last_audio = ply
+
+
     def wait_done(filename):
         if filename in self._players.keys():
             self._players[filename].wait_done()

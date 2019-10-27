@@ -85,9 +85,10 @@ def is_someone_new_close(object_id, prediction):
 def dispense_candy():
     print("app.py: dispense_candy")
     # TODO: Start regurgitation sound
+    AUDIO_PLAYER.play("vomit_candy.wav")
     # TODO: Turn motor to drop one candy
     # TODO: Say quirky thankyou
-    AUDIO_PLAYER.play("vomit_candy.wav")
+    # AUDO_PLAYER.compleate_then_play("thank_you.wav")
     return ""
 
 
