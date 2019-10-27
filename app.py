@@ -25,31 +25,34 @@ def main():
 
     try:
         # print("app.py: main: try block started")
-        # With needed to start video stream and streamer
-        streamer = components[aai.STREAMER]
-        with components[aai.VIDEO_STREAM] as _, :
+
+        # `with` needed to start video stream and streamer
+        with components[aai.VIDEO_STREAM] as _, \
+                components[aai.STREAMER] as _:
             while True:
                 # print("app.py: main: top of while loop")
                 tracks = aai.start_tracking_loop(config, components)
-                if len(tracks.items()) == 0:
-                    if anyone == True:
-                        print("Where is everyone?")
-                    anyone = False
                 predictions = []
+                if len(tracks.items()) == 0:
+                    text = ["Waiting for trick-or-treaters"]
                 for (object_id, prediction) in tracks.items():
+                    text = ["Found me some peeps!"]
                     # print("app.py: main: bounding box area for prediction: {}".format(prediction.box.area))
+                    label = "Person {oid} box area: {area}".format(
+                        oid=object_id, area=prediction.box.area)
+                    prediction.label = label
                     predictions.append(prediction)
                     if is_someone_new_close(object_id, prediction):
-                        print("Person {} is close".format(object_id))
+                        text.append("Person {} is close".format(object_id))
                         dispense_candy()
                         SEEN_NEAR_IDS[object_id] = True
                     elif is_someone_new_far(object_id, prediction):
-                        print("Person {} is far".format(object_id))
+                        text.append("Person {} is far".format(object_id))
                         whisper()
                         SEEN_FAR_IDS[object_id] = True
 
                 aai.end_tracking_loop(
-                    components, predictions, "_streamer_display_text_")
+                    components, predictions, text)
                 if aai.should_exit(components):
                     break
 
@@ -82,6 +85,7 @@ def dispense_candy():
     # TODO: Start regurgitation sound
     # TODO: Turn motor to drop one candy
     # TODO: Say quirky thankyou
+    speech.play_audiofile("vomit_candy.wav")
     return ""
 
 

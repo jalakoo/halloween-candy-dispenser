@@ -38,3 +38,17 @@ Simple Audio
 `pip3 install simpleaudio`
 `sudo apt-get install libasound2-dev`
 
+#### ALWAYSAI REQUIREMENTS
+When adding dependencies, additional info most be provided for the resultant docker image to build correctly. See [this page](https://dashboard.alwaysai.co/docs/application_development/handling_app_dependencies.html) for more info. Note that you'll need valid beta credentials to log into the alwaysai docs.
+
+To get versions of the pip dependencies to add the `requirements.txt` file
+`pip3 list --format columns`
+
+
+### TROUBLESHOOTING
+ERROR:
+```
+WARNING: The directory '/.cache/pip/http' or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+```
+SOLUTION:
+Make sure you're using the `==` symbol in your `requirements.txt` file. ie `simpleaudio==1.0.2 ` and not `simpleaudio=1.0.2 `

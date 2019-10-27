@@ -43,6 +43,7 @@ OBJECT_DETECTOR = "object_detector"
 STREAMER = "streamer"
 TRACKER = "tracker"
 VIDEO_STREAM = "video_stream"
+CURRENT_FRAME = "frame"
 
 
 def loadJSON(filepath):
@@ -173,6 +174,7 @@ def start_tracking_loop(config, components):
     # print("alwaysai_helper.py: start_tracking_loop: about to read frame from {}".format(
         # video_stream))
     frame = video_stream.read()
+    components[CURRENT_FRAME] = frame
     # print("alwaysai_helper.py: start_tracking_loop: about get filtered predictions...")
     predictions = _filtered_predictions_from(
         config, obj_detector, tracker, frame)
@@ -184,13 +186,13 @@ def end_tracking_loop(components, predictions, text):
     fps = components[FPS]
     streamer = components[STREAMER]
     video_stream = components[VIDEO_STREAM]
+    frame = components[CURRENT_FRAME]
     if fps is None:
         raise Exception(
             "alwaysai_helper.py: end_tracking_loop: fps missing from components")
     if video_stream is None:
         raise Exception(
             "alwaysai_helper.py: end_tracking_loop: video_stream missing from components")
-    frame = video_stream.read()
     edgeiq.markup_image(frame, predictions)
     if streamer is not None:
         streamer.send_data(frame, text)
