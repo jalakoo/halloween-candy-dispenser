@@ -8,16 +8,18 @@ class Speech:
         self.filePath = filePath
         self._players = {}
         for file in list(audioFiles):
-            self._players[file] = sa.WaveObject.from_wave_file(so.path.join(filePath,filename)
+            self._players[file] = sa.WaveObject.from_wave_file(
+                os.path.join(filePath, file))
             self._last_audio = self._players[file]
 
-    def load(filename):
-            self._players[filename] = sa.WaveObject.from_wave_file(so.path.join(filePath,filename)
-            return self._players[filename]
+    def load(self, filename):
+        self._players[filename] = sa.WaveObject.from_wave_file(
+            os.path.join(self.filePath, filename))
+        return self._players[filename]
 
-    def play(filename):
-
-        self._last_audio.stop()
+    def play(self, filename):
+        if self._last_audio is not None:
+            self._last_audio.stop()
         if filename in self._players.keys():
             ply = self._players[filename]
         else:
@@ -25,7 +27,7 @@ class Speech:
         ply.play()
         self._last_audio = ply
 
-    def compleate_then_play(filename):
+    def complete_then_play(self, filename):
         self._last_audio.wait_done()
         if filename in self._players.keys():
             ply = self._players[filename]
@@ -34,14 +36,13 @@ class Speech:
         ply.play()
         self._last_audio = ply
 
-
-    def wait_done(filename):
+    def wait_done(self, filename):
         if filename in self._players.keys():
             self._players[filename].wait_done()
         else:
-            load(filename).wait_done()
+            self.load(filename).wait_done()
 
-    def play_to_end(filename):
+    def play_to_end(self, filename):
         if filename in self._players.keys():
             ply = self._players[filename]
         else:

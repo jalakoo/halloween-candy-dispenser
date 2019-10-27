@@ -5,13 +5,15 @@ Primary run loop and logic
 import alwaysai_helper as aai
 import motor as m
 import speech
+import os
 
 # Bounding box area threshold to distinguish between
 #  a close and far person
 CLOSE_THRESHOLD = 50000
 SEEN_FAR_IDS = {}
 SEEN_NEAR_IDS = {}
-AUDIO_PLAYER = speech.Speech(os.path.join(os.getcwd(), 'bin', 'audio'),"vomit_candy.wav", "come_closer.wav")
+AUDIO_PLAYER = speech.Speech(os.path.join(
+    os.getcwd(), 'bin', 'audio'), "vomit_candy.wav", "come_closer.wav")
 
 
 def main():
