@@ -10,7 +10,13 @@ class Speech:
         for file in list(audioFiles):
             self._players[file] = sa.WaveObject.from_wave_file(
                 os.path.join(filePath, file))
-            self._last_audio = self._players[file]
+
+    def _get(self, filename):
+        if filename in self._players.keys():
+            ply = self._players[filename]
+        else:
+            ply = self.load(filename)
+        return ply
 
     def load(self, filename):
         self._players[filename] = sa.WaveObject.from_wave_file(
@@ -20,36 +26,25 @@ class Speech:
     def play(self, filename):
         if self._last_audio is not None:
             self._last_audio.stop()
-        if filename in self._players.keys():
-            ply = self._players[filename]
-        else:
-            ply = self.load(filename)
-        ply.play()
-        self._last_audio = ply
-
-    def complete_then_play(self, filename):
-        self._last_audio.wait_done()
-        if filename in self._players.keys():
-            ply = self._players[filename]
-        else:
-            ply = self.load(filename)
-        ply.play()
-        self._last_audio = ply
-
-    def wait_done(self, filename):
-        if filename in self._players.keys():
-            self._players[filename].wait_done()
-        else:
-            self.load(filename).wait_done()
+        self._last_audio = self._get(filename).play()
 
     def play_to_end(self, filename):
-        if filename in self._players.keys():
-            ply = self._players[filename]
-        else:
-            ply = self.load(filename)
-        ply.play()
-        self._last_audio = ply
-        ply.wait_done()
+        if self._last_audio is not None:
+            self._last_audio.stop()
+        self._get(filename).play().wait_done()
+        self._last_audio = None
+
+    def complete_then_play(self, filename):
+        self.wait_done()
+        self._last_audio = self._get(filename).play()
+
+    def wait_done(self):
+        if self._last_audio is not None:
+            self._last_audio.wait_done()
+
+
+
+
 
 
 def play_audiofile(filename):

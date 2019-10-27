@@ -106,7 +106,7 @@ def dispense_candy():
     AUDIO_PLAYER.play("vomit_candy.wav")
     # TODO: Turn motor to drop one candy
     # TODO: Say quirky thankyou
-    # AUDO_PLAYER.compleate_then_play("thank_you.wav")
+    # AUDO_PLAYER.complete_then_play("thank_you.wav")
     return ""
 
 
