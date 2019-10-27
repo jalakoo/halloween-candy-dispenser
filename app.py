@@ -6,6 +6,8 @@ import alwaysai_helper as aai
 import motor as m
 import speech
 
+# Bounding box area threshold to distinguish between
+#  a close and far person
 CLOSE_THRESHOLD = 50000
 SEEN_FAR_IDS = {}
 SEEN_NEAR_IDS = {}
@@ -22,16 +24,28 @@ def main():
     # Components contains references to aai element such as the
     #  object tracker, centroid tracker, streamer, fps, etc.
     components = aai.get_components(config)
+    # object_detector = aai.object_detector_from(config)
+    # tracker = aai.tracker_from(config)
+    # fps = aai.fps_monitor()
 
     try:
         # print("app.py: main: try block started")
 
         # `with` needed to start video stream and streamer
+        #  TODO: How does this work if we're optionally disabling the streamer?
         with components[aai.VIDEO_STREAM] as _, \
                 components[aai.STREAMER] as _:
+            # with aai.video_stream_from(config) as video_stream, \
+            #         aai.streamer_from(config) as streamer:
+
+            # fps.start()
+
             while True:
                 # print("app.py: main: top of while loop")
                 tracks = aai.start_tracking_loop(config, components)
+                # frame = video_stream.read()
+                # tracks = aai.filtered_predictions_from(
+                #     config, object_detector, tracker, frame)
                 predictions = []
                 if len(tracks.items()) == 0:
                     text = ["Waiting for trick-or-treaters"]
@@ -53,10 +67,12 @@ def main():
 
                 aai.end_tracking_loop(
                     components, predictions, text)
+                # aai.updateStream(frame, streamer, fps, predictions, text)
                 if aai.should_exit(components):
                     break
 
     finally:
+        # fps.stop()
         aai.stop_predictions(components)
 
 

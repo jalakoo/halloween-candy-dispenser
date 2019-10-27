@@ -81,7 +81,7 @@ def object_detector(model):
     return od
 
 
-def _video_stream_from(config):
+def video_stream_from(config):
     mode = config[VIDEO_MODE]
     # TODO: Lowercasing?
     if mode == "file":
@@ -107,15 +107,15 @@ def _video_camera_stream(camera_id):
     return video_stream
 
 
-def _streamer_from(config):
-    # print("alwaysai_helper.py: _streamer_from")
+def streamer_from(config):
+    # print("alwaysai_helper.py: streamer_from")
     should_enable = config.get(ENABLE_STREAMER, True)
     if should_enable == True:
         return edgeiq.Streamer()
     return None
 
 
-def _tracker_from(config):
+def tracker_from(config):
     # TODO: Switch between centroid and ...
     return _centroid_tracker_from(config)
 
@@ -128,7 +128,7 @@ def _centroid_tracker_from(config):
         deregister_frames=frames, max_distance=distance)
 
 
-def _filtered_predictions_from(config, obj_detect, tracker, frame):
+def filtered_predictions_from(config, obj_detect, tracker, frame):
     # print("alwaysai_helper.py: _filtered_predictions")
     confidence = config.get(OBJ_DETCTION_CONFIDENCE, .5)
     results = obj_detect.detect_objects(
@@ -145,9 +145,9 @@ def get_components(config):
     fps = edgeiq.FPS()
     fps.start()
     obj_detector = object_detector_from(config)
-    streamer = _streamer_from(config)
-    tracker = _tracker_from(config)
-    video_stream = _video_stream_from(config)
+    streamer = streamer_from(config)
+    tracker = tracker_from(config)
+    video_stream = video_stream_from(config)
     return {
         FPS: fps,
         OBJECT_DETECTOR: obj_detector,
@@ -155,6 +155,10 @@ def get_components(config):
         TRACKER: tracker,
         VIDEO_STREAM: video_stream
     }
+
+
+def fps_monitor():
+    return edgeiq.FPS()
 
 
 def start_tracking_loop(config, components):
@@ -176,7 +180,7 @@ def start_tracking_loop(config, components):
     frame = video_stream.read()
     components[CURRENT_FRAME] = frame
     # print("alwaysai_helper.py: start_tracking_loop: about get filtered predictions...")
-    predictions = _filtered_predictions_from(
+    predictions = filtered_predictions_from(
         config, obj_detector, tracker, frame)
     return predictions
 
@@ -193,10 +197,22 @@ def end_tracking_loop(components, predictions, text):
     if video_stream is None:
         raise Exception(
             "alwaysai_helper.py: end_tracking_loop: video_stream missing from components")
-    edgeiq.markup_image(frame, predictions)
+    frame = edgeiq.markup_image(frame, predictions)
     if streamer is not None:
         streamer.send_data(frame, text)
     fps.update()
+
+
+def updateStream(frame, streamer, fps, predictions, text):
+    frame = edgeiq.markup_image(frame, predictions)
+    streamer.send_data(frame, text)
+    fps.update()
+
+
+# def should_exit(streamer):
+#     if streamer.check_exit():
+#         return True
+#     return False
 
 
 def should_exit(components):
