@@ -11,11 +11,13 @@ import speech
 CLOSE_THRESHOLD = 50000
 SEEN_FAR_IDS = {}
 SEEN_NEAR_IDS = {}
+AUDIO_PLAYER = speech.Speech(os.path.join(os.getcwd(), 'bin', 'audio'),"vomit_candy.wav", "come_closer.wav")
 
 
 def main():
     global SEEN_FAR_IDS
     global SEEN_NEAR_IDS
+    global AUDIO_PLAYER
 
     # Load configuration set in alwaysai.app.json so we don't have to
     #  edit code to redeploy with every change
@@ -58,8 +60,8 @@ def main():
                     predictions.append(prediction)
                     if is_someone_new_close(object_id, prediction):
                         text.append("Person {} is close".format(object_id))
-                        dispense_candy()
                         SEEN_NEAR_IDS[object_id] = True
+                        dispense_candy()
                     elif is_someone_new_far(object_id, prediction):
                         text.append("Person {} is far".format(object_id))
                         whisper()
@@ -99,16 +101,17 @@ def is_someone_new_close(object_id, prediction):
 def dispense_candy():
     print("app.py: dispense_candy")
     # TODO: Start regurgitation sound
+    AUDIO_PLAYER.play("vomit_candy.wav")
     # TODO: Turn motor to drop one candy
     # TODO: Say quirky thankyou
-    speech.play_audiofile("vomit_candy.wav")
+    # AUDO_PLAYER.compleate_then_play("thank_you.wav")
     return ""
 
 
 def whisper():
     print("app.py: whisper")
     # TODO: randomize option
-    speech.play_audiofile("come_closer.wav")
+    AUDIO_PLAYER.play("come_closer.wav")
     return ""
 
 
