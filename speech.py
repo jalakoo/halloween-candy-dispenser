@@ -10,6 +10,7 @@ class Speech:
         for file in list(audioFiles):
             self._players[file] = sa.WaveObject.from_wave_file(
                 os.path.join(filePath, file))
+        self._last_audio = None
 
     def _get(self, filename):
         if filename in self._players.keys():
@@ -41,10 +42,6 @@ class Speech:
     def wait_done(self):
         if self._last_audio is not None:
             self._last_audio.wait_done()
-
-
-
-
 
 
 def play_audiofile(filename):

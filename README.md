@@ -38,6 +38,10 @@ Simple Audio
 `pip3 install simpleaudio`
 `sudo apt-get install libasound2-dev`
 
+#### Helpful Commands
+To get a list of available packages by name
+`apt-cache search something`
+
 #### ALWAYSAI REQUIREMENTS
 When adding dependencies, additional info most be provided for the resultant docker image to build correctly. See [this page](https://dashboard.alwaysai.co/docs/application_development/handling_app_dependencies.html) for more info. Note that you'll need valid beta credentials to log into the alwaysai docs.
 
