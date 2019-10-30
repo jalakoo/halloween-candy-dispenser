@@ -19,5 +19,9 @@
     "filter_labels": [
       "person"
     ]
+  },
+  "settings": {
+    "vomit_threshold": 2,
+    "close_threshold": 60000
   }
 }

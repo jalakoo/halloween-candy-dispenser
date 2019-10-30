@@ -1,7 +1,7 @@
 import time
 import edgeiq
 import os
-import json
+import file_manager
 
 '''
 full config dictionary:
@@ -46,11 +46,11 @@ VIDEO_STREAM = "video_stream"
 CURRENT_FRAME = "frame"
 
 
-def loadJSON(filepath):
-    if os.path.exists(filepath) == False:
-        raise Exception('File at {} does not exist'.format(filepath))
-    with open(filepath) as data:
-        return json.load(data)
+# def loadJSON(filepath):
+#     if os.path.exists(filepath) == False:
+#         raise Exception('File at {} does not exist'.format(filepath))
+#     with open(filepath) as data:
+#         return json.load(data)
 
 
 def is_accelerator_available():

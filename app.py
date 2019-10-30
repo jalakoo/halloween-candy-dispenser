@@ -3,13 +3,15 @@ Primary run loop and logic
 """
 
 import alwaysai_helper as aai
+import file_manager as fm
 import motor as m
+import random
 import speech
 import os
 
 # Bounding box area threshold to distinguish between
 #  a close and far person
-CLOSE_THRESHOLD = 50000
+# CLOSE_THRESHOLD = 50000
 SEEN_FAR_IDS = {}
 SEEN_NEAR_IDS = {}
 AUDIO_PLAYER = speech.Speech(os.path.join(
@@ -20,17 +22,15 @@ def main():
     global SEEN_FAR_IDS
     global SEEN_NEAR_IDS
     global AUDIO_PLAYER
-
+    app_settings = fm.loadJSON('alwaysai.app.json')["settings"]
+    close_threshold = app_settings.get("close_threshold", 50000)
     # Load configuration set in alwaysai.app.json so we don't have to
     #  edit code to redeploy with every change
-    config = aai.loadJSON('alwaysai.app.json')['tracker_1']
+    aai_config = fm.loadJSON('alwaysai.app.json')['tracker_1']
 
     # Components contains references to aai element such as the
     #  object tracker, centroid tracker, streamer, fps, etc.
-    components = aai.get_components(config)
-    # object_detector = aai.object_detector_from(config)
-    # tracker = aai.tracker_from(config)
-    # fps = aai.fps_monitor()
+    components = aai.get_components(aai_config)
 
     try:
         # print("app.py: main: try block started")
@@ -39,18 +39,12 @@ def main():
         #  TODO: How does this work if we're optionally disabling the streamer?
         with components[aai.VIDEO_STREAM] as _, \
                 components[aai.STREAMER] as _:
-            # with aai.video_stream_from(config) as video_stream, \
-            #         aai.streamer_from(config) as streamer:
-
-            # fps.start()
 
             while True:
                 # print("app.py: main: top of while loop")
-                tracks = aai.start_tracking_loop(config, components)
-                # frame = video_stream.read()
-                # tracks = aai.filtered_predictions_from(
-                #     config, object_detector, tracker, frame)
+                tracks = aai.start_tracking_loop(aai_config, components)
                 predictions = []
+                candy_to_dispense = 0
                 if len(tracks.items()) == 0:
                     text = ["Waiting for trick-or-treaters"]
                 for (object_id, prediction) in tracks.items():
@@ -60,15 +54,17 @@ def main():
                         oid=object_id, area=prediction.box.area)
                     prediction.label = label
                     predictions.append(prediction)
-                    if is_someone_new_close(object_id, prediction):
+                    if is_someone_new_close(object_id, prediction, close_threshold):
                         text.append("Person {} is close".format(object_id))
                         SEEN_NEAR_IDS[object_id] = True
-                        dispense_candy()
-                    elif is_someone_new_far(object_id, prediction):
+                        candy_to_dispense += 1
+                        # dispense_candy()
+                    elif is_someone_new_far(object_id, prediction, close_threshold):
                         text.append("Person {} is far".format(object_id))
                         whisper()
                         SEEN_FAR_IDS[object_id] = True
 
+                dispense_candy(candy_to_dispense, app_settings)
                 aai.end_tracking_loop(
                     components, predictions, text)
                 # aai.updateStream(frame, streamer, fps, predictions, text)
@@ -80,40 +76,45 @@ def main():
         aai.stop_predictions(components)
 
 
-def is_someone_new_far(object_id, prediction):
+def is_someone_new_far(object_id, prediction, close_threshold):
     global SEEN_FAR_IDS
     if object_id in SEEN_FAR_IDS:
         return False
     area = prediction.box.area
-    if area >= CLOSE_THRESHOLD:
+    if area >= close_threshold:
         return False
     return True
 
 
-def is_someone_new_close(object_id, prediction):
+def is_someone_new_close(object_id, prediction, close_threshold):
     global SEEN_NEAR_IDS
     if object_id in SEEN_NEAR_IDS:
         return False
     area = prediction.box.area
-    if area < CLOSE_THRESHOLD:
+    if area < close_threshold:
         return False
     return True
 
 
-def dispense_candy():
-    print("app.py: dispense_candy")
-    # TODO: Start regurgitation sound
-    AUDIO_PLAYER.play("vomit_candy.wav")
-    # TODO: Turn motor to drop one candy
-    # TODO: Say quirky thankyou
-    # AUDO_PLAYER.complete_then_play("thank_you.wav")
+def dispense_candy(candies_to_dispense, app_settings):
+    if candies_to_dispense == 0:
+        return ""
+    print("app.py: dispense_candy: candies: {}".format(candies_to_dispense))
+    if candies_to_dispense > app_settings.get("vomit_threshold", 2):
+        AUDIO_PLAYER.complete_then_play("vomiting-01.wav")
+        return ""
+    for _ in range(candies_to_dispense):
+        AUDIO_PLAYER.complete_then_play("vomiting-06.wav")
+    # TODO: Call motor to dispense candy
     return ""
 
 
 def whisper():
     print("app.py: whisper")
-    # TODO: randomize option
-    AUDIO_PLAYER.play("come_closer.wav")
+    AUDIO_Sounds = ["come_here.wav", "come_closer.wav",
+                    "i_can_see_you.wav", "i_have_something_for_you.wav"]
+    AUDIO_Random = random.choice(AUDIO_Sounds)
+    AUDIO_PLAYER.complete_then_play(AUDIO_Random)
     return ""
 
 
