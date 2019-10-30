@@ -11,12 +11,14 @@ out3 = 15
 out4 = 12
 speed = .03 # Higher values equal slower speeds. 1 is slow, .001 is very fast
             # Lower speeds have higher torque. High speeds have a tendency to strip the motor. 
-
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(out1,GPIO.OUT)
 GPIO.setup(out2,GPIO.OUT)
 GPIO.setup(out3,GPIO.OUT)
 GPIO.setup(out4,GPIO.OUT)
+
+
 
 
 def motor_dispense_candy(num_candy):
@@ -31,7 +33,7 @@ def motor_dispense_candy(num_candy):
     GPIO.output(out3,GPIO.LOW)
     GPIO.output(out4,GPIO.LOW)
 
-    x = abs(400 * num_candy) # A complete rotation is 400; 180 degree rotation is 200
+    x = abs(200 * num_candy) # A complete rotation is 400; 180 degree rotation is 200
 
     for y in range(x,0,-1):
         if i==0:
@@ -51,7 +53,7 @@ def motor_dispense_candy(num_candy):
             GPIO.output(out2,GPIO.HIGH)
             GPIO.output(out3,GPIO.LOW)
             GPIO.output(out4,GPIO.LOW)
-            time.sleep(0speed)
+            time.sleep(speed)
         elif i==3:    
             GPIO.output(out1,GPIO.LOW)
             GPIO.output(out2,GPIO.HIGH)
@@ -93,8 +95,8 @@ def cleanup():
 
 def motor_main():
   try:
-    dispense_candy(1)
-  except KeyboardInterupt: 
+    motor_dispense_candy(1)
+  except KeyboardInterrupt: 
     cleanup()
 
 if __name__ == "__main__":
