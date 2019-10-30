@@ -9,9 +9,10 @@ out1 = 13
 out2 = 11
 out3 = 15
 out4 = 12
+
 speed = .03  # Higher values equal slower speeds. 1 is slow, .001 is very fast
 # Lower speeds have higher torque. High speeds have a tendency to strip the motor.
-
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(out1, GPIO.OUT)
 GPIO.setup(out2, GPIO.OUT)
