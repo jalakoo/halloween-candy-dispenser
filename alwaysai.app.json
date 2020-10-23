@@ -1,9 +1,9 @@
 {
-  "models": {
-    "alwaysai/mobilenet_ssd": 1
-  },
   "scripts": {
     "start": "python app.py"
+  },
+  "models": {
+    "alwaysai/mobilenet_ssd": 4
   },
   "tracker_1": {
     "model_name": "alwaysai/mobilenet_ssd",

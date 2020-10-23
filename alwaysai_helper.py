@@ -46,19 +46,8 @@ VIDEO_STREAM = "video_stream"
 CURRENT_FRAME = "frame"
 
 
-# def loadJSON(filepath):
-#     if os.path.exists(filepath) == False:
-#         raise Exception('File at {} does not exist'.format(filepath))
-#     with open(filepath) as data:
-#         return json.load(data)
-
-
 def is_accelerator_available():
-    if edgeiq.find_usb_device(id_vendor=edgeiq.constants.NCS1_VID, id_product=edgeiq.constants.NCS1_PID) == True:
-        return True
-    if edgeiq.find_usb_device(edgeiq.constants.NCS1_VID, edgeiq.constants.NCS1_PID2) == True:
-        return True
-    if edgeiq.find_usb_device(edgeiq.constants.NCS2_VID, edgeiq.constants.NCS2_PID) == True:
+    if edgeiq.find_ncs2():
         return True
     return False
 
@@ -207,12 +196,6 @@ def updateStream(frame, streamer, fps, predictions, text):
     frame = edgeiq.markup_image(frame, predictions)
     streamer.send_data(frame, text)
     fps.update()
-
-
-# def should_exit(streamer):
-#     if streamer.check_exit():
-#         return True
-#     return False
 
 
 def should_exit(components):

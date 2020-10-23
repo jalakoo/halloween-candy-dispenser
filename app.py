@@ -4,7 +4,7 @@ Primary run loop and logic
 
 import alwaysai_helper as aai
 import file_manager as fm
-import motor as m
+# import motor as m
 import random
 import speech
 import os

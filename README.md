@@ -56,3 +56,17 @@ WARNING: The directory '/.cache/pip/http' or its parent directory is not owned b
 ```
 SOLUTION:
 Make sure you're using the `==` symbol in your `requirements.txt` file. ie `simpleaudio==1.0.2 ` and not `simpleaudio=1.0.2 `
+
+ERROR:
+```
+✖ Install python dependencies
+Error: Process exited with non-zero status code 1
+
+$ ssh -i /Users/jason.koo/.ssh/alwaysai.id_rsa pi@raspberrypi.local docker run --rm --privileged --interactive --network=host --volume /dev:/dev --volume ~/alwaysai/halloween-candy-dispenser:/app --user $(id -u ${USER}):$(id -g ${USER}) --workdir /app sha256:add648aafec43e7ee457cfd6e3306bacb662b19647b2a54a5c5befb687533ecb venv/bin/pip install --requirement requirements.txt
+
+Traceback (most recent call last):
+  File "/app/venv/bin/pip", line 6, in <module>
+    from pip._internal.cli.main import main
+ImportError: No module named 'pip._internal.cli.main'
+```
+SOLUTION:
